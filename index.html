@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matchin Game|Welcome</title>
+    <style>
+        body {
+            text-align: center;
+            font-size: 1.5rem;
+        }
+        
+        .container {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            justify-items: stretch;
+        }
+        
+        img {
+            width: 240px;
+            height: 200px;
+            filter: brightness(0%);
+            padding-bottom: 4px;
+        }
+        
+        .btn {
+            margin-top: 40px;
+            padding: 30px 40px;
+            color: white;
+            background: tomato;
+            border-radius: 3px;
+        }
+        
+        p {
+            background-color: tomato;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <img class="img" id="ramp" src="ramp logo.jpeg" alt="">
+        <img class="img" id="ramp" src="ramp logo.jpeg" alt="">
+        <img class="img" id="platypus" src="platypus.jpg" alt="">
+        <img class="img" id="platypus" src="platypus.jpg" alt="">
+        <img class="img" id="mhp" src="mhp.jpg" alt="">
+        <img class="img" id="mhp" src="mhp.jpg" alt="">
+        <img class="img" id="carcass" src="carcass.jpg" alt="">
+        <img class="img" id="carcass" src="carcass.jpg" alt="">
+        <img class="img" id="homer" src="homer.png" alt="">
+        <img class="img" id="homer" src="homer.png" alt="">
+        <img class="img" id="satan" src="satan.jpg" alt="">
+        <img class="img" id="satan" src="satan.jpg" alt="">
+        <img class="img" id="gandhi" src="gandhi.jpg" alt="">
+        <img class="img" id="gandhi" src="gandhi.jpg" alt="">
+        <img class="img" id="dog" src="dog.jpg" alt="">
+        <img class="img" id="dog" src="dog.jpg" alt="">
+        <img class="img" id="sponge" src="sponge.jpg" alt="">
+        <img class="img" id="sponge" src="sponge.jpg" alt="">
+
+
+
+    </div>
+    <div class="game">
+        <button id='play' class="btn" onclick="playAgain() ">PLAY AGAIN</button disabled>
+        <button class="btn" onclick="reset()">RESET</button>
+    </div>
+
+    <script>
+        var count = 0;
+        var pairCount = 0;
+        var ids = [];
+        var pairs = [];
+        const images = document.querySelectorAll('.img');
+        const container = document.querySelector('.container');
+        var winCondition = images.length / 2;
+        shuffle();
+
+        function shuffle() {
+            var j, i, x;
+            for (i = images.length - 1; i > 0; i--) {
+                j = Math.floor(Math.random() * (i + 1));
+                x = images[i];
+                images[i] = images[j];
+                images[j] = x;
+                container.appendChild(images[j]);
+            }
+            images.forEach(function(image) {
+                image.addEventListener('click', turnImg);
+            });
+        }
+
+
+
+        function turnImg(e) {
+            count += 1;
+            pairs.push(e.target);
+            let id = e.target.id;
+            ids.push(id);
+            e.target.style.filter = 'brightness(100%)';
+            if (count == 2) {
+                images.forEach(function(image) {
+                    image.style.pointerEvents = 'none';
+                });
+                if (ids[0] == ids[1]) {
+                    pairCount += 1;
+                    stay();
+                } else {
+                    setTimeout(turnAllBlack, 1000);
+                }
+            }
+        };
+
+        function stay() {
+            count = 0;
+            ids.length = 0;
+            const images = document.querySelectorAll('.img');
+            images.forEach(function(image) {
+                image.style.pointerEvents = '';
+            });
+
+            pairs.forEach(function(pair) {
+                pair.classList.remove('img');
+                pair.style.pointerEvents = 'none';
+            });
+            if (pairCount == winCondition) {
+                win();
+            };
+            pairs.length = 0;
+        };
+
+        function turnAllBlack() {
+            count = 0;
+            ids.length = 0;
+            const images = document.querySelectorAll('.img');
+            images.forEach(function(image) {
+                image.style.filter = 'brightness(0%)';
+                image.style.pointerEvents = '';
+            });
+            pairs.length = 0;
+        };
+
+        function win() {
+            document.getElementById("play").disabled = false;
+            const images = document.querySelectorAll('img');
+            images.forEach(function(image) {
+                image.style.filter = 'brightness(100%)';
+            });
+            let p = document.createElement('p');
+            p.className = 'win'
+            p.textContent = 'YOU WIN';
+            document.body.appendChild(p);
+
+        }
+
+        function playAgain() {
+            const images = document.querySelectorAll('img');
+            images.forEach(function(image) {
+                image.style.filter = 'brightness(0%)';
+                image.style.pointerEvents = '';
+                document.querySelector('.win').textContent = '';
+                count = 0;
+                shuffle();
+            });
+        }
+
+        function reset() {
+            const images = document.querySelectorAll('img');
+            images.forEach(function(image) {
+                image.style.filter = 'brightness(0%)';
+                image.style.pointerEvents = '';
+                pairs.length = 0;
+                pairCount = 0;
+                count = 0;
+            });
+        }
+    </script>
+</body>
+
+</html>
