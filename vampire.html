@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vampire vs. Villagers</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <style>
+        body {
+            text-align: center;
+            font-family: 'Roboto', sans-serif;
+            background-color: blanchedalmond;
+        }
+        
+        h1 {
+            font-size: 4rem;
+            color: crimson;
+        }
+        
+        input {
+            display: block;
+            background-color: black;
+            color: whitesmoke;
+            font-size: 20px;
+            padding: 10px 10px;
+            margin: auto;
+            margin-top: 5px;
+        }
+        
+        input:focus {
+            border: 3px solid crimson;
+        }
+        
+        #play {
+            padding: 20px 0px;
+            margin-top: 10px;
+            font-size: 25px;
+            width: 275px;
+            font-weight: bolder;
+            background-color: crimson;
+            color: whitesmoke;
+        }
+        
+        button {
+            padding: 20px 0px;
+            margin-top: 10px;
+            font-size: 20px;
+            width: 200px;
+            font-weight: bolder;
+            background-color: crimson;
+            color: whitesmoke;
+        }
+        
+        button:hover {
+            background: black;
+            transition: 0.5s;
+        }
+        
+        #play:hover {
+            background-color: black;
+            color: crimson;
+            transition: 1s;
+        }
+        
+        img {
+            width: 400px;
+            height: 400px;
+        }
+        
+        .small-img {
+            width: 150px;
+            height: 150px;
+        }
+        
+        p {
+            font-size: 30px;
+            font-weight: bold;
+            color: crimson;
+        }
+        
+        .img-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+        }
+        
+        .img-container p {
+            background-color: burlywood;
+            border: 2px solid crimson;
+            border-radius: 3px;
+            width: 50%;
+            margin: auto;
+        }
+        
+        .img-container p:hover {
+            background-color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>VAMPIRE VS VILLAGERS</h1>
+    <div class="container">
+        <input type="number" id="num" placeholder="Player Count">
+    </div>
+    <div class="players">
+
+    </div>
+    <button onclick="play()" id="play">PLAY</button>
+    <script>
+        class Villager {
+            constructor(name) {
+                this.name = name;
+                this.dead = false;
+                this.type = 'villager';
+            }
+
+
+            die(arr) {
+                this.dead = true;
+                arr.splice(arr.indexOf(this), 1);
+                //console.log(`${this.name} is dead`);
+            }
+        }
+        class Vampire {
+            constructor(name) {
+                this.name = name;
+                this.dead = false;
+                this.type = 'vampire';
+            }
+
+        }
+        var playersArr = [];
+        var container = document.querySelector('.container');
+        var players = document.querySelector('.players');
+        document.getElementById('num').addEventListener('input', addPlayers);
+
+        function addPlayers(e) {
+            players.innerHTML = '';
+            for (let i = 0; i < e.target.value; i++) {
+                const player = document.createElement('input');
+                player.setAttribute('type', 'text');
+                player.setAttribute('placeholder', 'Enter Name');
+                player.className = 'player';
+                players.appendChild(player);
+            }
+        }
+
+        function play() {
+            let playerNum = document.getElementById('num').value;
+            if (playerNum >= 4) {
+                let allPlayers = document.querySelectorAll('.player');
+                allPlayers.forEach(function(player) {
+                    let rand = Math.floor((Math.random() * 2) + 1);
+                    if (rand == 1) {
+                        playersArr.push(new Villager(player.value));
+                    } else {
+                        playersArr.push(new Vampire(player.value));
+                    }
+                });
+                document.body.innerHTML = '';
+                showPlayers(playersArr[0], 0);
+            } else {
+                let alert = document.createElement('p');
+                let button = document.getElementById('play');
+                alert.innerHTML = 'Must have at least 4 players!';
+                document.body.appendChild(alert);
+                document.body.insertBefore(alert, button);
+                setTimeout(function() {
+                    alert.remove();
+                }, 2000);
+            }
+        }
+
+        function showPlayers(player, i) {
+            let img = document.createElement('img');
+            let name = document.createElement('p');
+            let btn = document.createElement('button');
+            btn.textContent = 'OK';
+
+            name.innerHTML = player.name;
+            document.body.appendChild(img);
+            document.body.appendChild(name);
+            document.body.appendChild(btn);
+
+            if (player.type == 'villager') {
+                img.src = "villager.png";
+            } else {
+                img.src = "vampire.jpg";
+                var imgContainer = document.createElement('div');
+                imgContainer.className = 'img-container';
+                playersArr.forEach(function(player) {
+                    if (player.type == 'villager') {
+                        let imgP = document.createElement('div');
+                        let villagerImg = document.createElement('img');
+                        villagerImg.className = 'small-img';
+                        villagerImg.src = "villager.png";
+                        let villagerName = document.createElement('p');
+                        villagerName.innerHTML = player.name;
+                        imgP.appendChild(villagerImg);
+                        imgP.appendChild(villagerName);
+                        imgContainer.appendChild(imgP);
+                        document.body.insertBefore(imgContainer, btn);
+                        villagerName.onclick = function() {
+                            player.die(playersArr);
+                            villagerName.style.backgroundColor = 'black';
+                            let names = document.querySelectorAll('p');
+                            names.forEach(function(p) {
+                                p.style.pointerEvents = 'none';
+                            });
+                        }
+                    }
+                })
+            }
+            btn.onclick = function() {
+                i += 1;
+                img.remove();
+                name.remove();
+                img.remove();
+                btn.remove();
+                if (imgContainer != undefined)
+                    imgContainer.remove();
+                if (i < playersArr.length) {
+                    showPlayers(playersArr[i], i);
+                } else {
+                    checkWin(playersArr);
+                }
+            };
+        }
+
+        function checkWin(arr) {
+            if (playersArr.length < 3) {
+                let win = document.createElement('p')
+                win.textContent = 'YOU WIN';
+                document.body.appendChild(win);
+
+            } else {
+                i = 0;
+                showPlayers(playersArr[i], i);
+            }
+        }
+    </script>
+</body>
+
+
+</html>
