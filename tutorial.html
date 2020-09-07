@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css" integrity="sha512-5fsy+3xG8N/1PV5MIJz9ZsWpkltijBI48gBzQ/Z2eVATePGHOkMIn+xTDHIfTZFVb9GMpflF2wOWItqxAP2oLQ==" crossorigin="anonymous" />
+    <style>
+        body {
+            text-align: center;
+        }
+        
+        button {
+            margin: 8px;
+        }
+        
+        p {
+            font-size: 2rem;
+        }
+        
+        #ok {
+            display: block;
+            margin: auto;
+        }
+        
+        input {
+            font-size: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <p id='start'>Select amount</p>
+    <h6 id='score'>Score: 0</h6>
+    <input id='amount' type="number">
+    <button id="ok" class="button-primary">OK</button>
+    <script>
+        var questionArr = [];
+        var k = 0;
+        var amount = 0;
+        var score = 0;
+
+        async function get(url) {
+            const response = await fetch(url);
+            const resData = await response.json();
+            return resData;
+        }
+
+        //Getting Data 
+        function startGame() {
+            okBtn = document.getElementById('ok');
+            okBtn.onclick = () => {
+                amount = Math.floor(document.getElementById('amount').value)
+                get(`https://opentdb.com/api.php?amount=${amount}`)
+                    .then(data => {
+                        questionArr = data.results;
+                        createQuestion(questionArr, amount, k);
+                    });
+
+                okBtn.remove();
+                document.getElementById('start').remove();
+                document.getElementById('amount').remove();
+            }
+        }
+
+        //Creating the question
+        function createQuestion(questionArr, amount, k) {
+            if (k == questionArr.length) {
+                console.log('Game over');
+            } else {
+                let choices = [];
+                let correctAns = questionArr[k].correct_answer;
+                console.log(correctAns);
+                choices.push(correctAns);
+                for (let j = 0; j < questionArr[k].incorrect_answers.length; j++)
+                    choices.push(questionArr[k].incorrect_answers[j]);
+                shuffle(choices);
+                let question = document.createElement('p');
+                question.textContent = questionArr[k].question;
+                showQuestion(question, choices, correctAns);
+            }
+        }
+
+        //Creating the question UI
+        function showQuestion(question, array, ans) {
+            document.body.appendChild(question);
+            for (let i = 0; i < array.length; i++) {
+                let btn = document.createElement('button');
+                btn.className = 'button-primary';
+                btn.textContent = `${array[i]}`;
+                document.body.appendChild(btn);
+                btn.addEventListener("click", (e) => {
+                    if (e.target.textContent === ans) {
+                        k += 1;
+                        score += 1;
+                        removeQuestion();
+                        createQuestion(questionArr, amount, k);
+                        document.getElementById('score').textContent = `Score:${score}`;
+                    } else {
+                        k += 1;
+                        removeQuestion();
+                        createQuestion(questionArr, amount, k);
+                    }
+                });
+            }
+        }
+
+        function removeQuestion() {
+            document.querySelectorAll('button').forEach(element => element.remove());
+            document.querySelector('p').remove();
+        }
+
+        //Array Shuffling 
+        function shuffle(array) {
+            var currentIndex = array.length,
+                temporaryValue, randomIndex;
+
+            // While there remain elements to shuffle...
+            while (0 !== currentIndex) {
+
+                // Pick a remaining element...
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex -= 1;
+
+                // And swap it with the current element.
+                temporaryValue = array[currentIndex];
+                array[currentIndex] = array[randomIndex];
+                array[randomIndex] = temporaryValue;
+            }
+        }
+
+        startGame();
+    </script>
+</body>
+
+</html>
