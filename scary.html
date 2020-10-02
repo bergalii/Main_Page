@@ -25,6 +25,7 @@
             text-align: center;
             color: red;
             font-size: 3rem;
+            margin-top: 0;
         }
         
         .start {
@@ -45,6 +46,11 @@
         img {
             width: 100%;
             height: 100%;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-top: 20%;
         }
     </style>
 </head>
@@ -175,6 +181,10 @@
             score = parseInt(score.replace('Score: ', ''));
             score += 1;
             document.querySelector('.score').innerHTML = `Score: ${score}`
+            if (score == 10) {
+                document.querySelector('.time').remove();
+                document.body.innerHTML = '<h1>Congrats You WON!</h1>';
+            }
         }
 
         function scare() {
