@@ -44,7 +44,7 @@
 <body>
     <p id='start'>Select amount</p>
     <h6 id='score'>Score: 0</h6>
-    <input id='amount' type="number">
+    <input id='amount' type="text" pattern="[0-9]{3}">
     <button id="ok" class="button-primary">OK</button>
     <script>
         var questionArr = [];
@@ -82,13 +82,17 @@
             } else {
                 let choices = [];
                 let correctAns = questionArr[k].correct_answer;
-                console.log(correctAns);
                 choices.push(correctAns);
                 for (let j = 0; j < questionArr[k].incorrect_answers.length; j++)
                     choices.push(questionArr[k].incorrect_answers[j]);
                 shuffle(choices);
                 let question = document.createElement('p');
-                question.textContent = questionArr[k].question;
+                let questionText = questionArr[k].question;
+                console.log(questionText);
+                let questionClean = questionText.replace(/&#039;/g, '');
+                questionClean = questionText.replace(/&quot;/g, '');
+                console.log(questionClean);
+                question.textContent = questionClean;
                 showQuestion(question, choices, correctAns);
             }
         }

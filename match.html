@@ -4,11 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Matching Game </title>
     <style>
         body {
             text-align: center;
             font-size: 1.5rem;
+            background-image: url(https://pixabay.com/get/57e8d0414356a914f6d1867dda353678153cdee65b54704f_1920.jpg);
         }
         
         .container {
@@ -17,68 +18,174 @@
             justify-items: stretch;
         }
         
+        #title {
+            color: rgba(27, 26, 26, 0.582);
+        }
+        
         img {
             width: 240px;
             height: 200px;
             filter: brightness(0%);
             padding-bottom: 4px;
+            border-radius: 5px;
+            user-select: none;
+            -moz-user-select: none;
+            -webkit-user-drag: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            border: black 1px solid;
         }
         
         .btn {
             margin-top: 40px;
-            padding: 30px 40px;
+            padding: 20px 40px;
+            width: 200px;
             color: white;
             background: tomato;
             border-radius: 3px;
+            display: block;
+            margin: auto;
+            margin-top: 10px;
         }
         
         p {
             background-color: tomato;
             color: white;
+            padding: 10px;
+        }
+        
+        #loading {
+            display: none;
+            filter: brightness(100%);
+            width: 100px;
+            height: 100px;
+        }
+        
+        #play {
+            color: black;
+        }
+        
+        @media (max-width: 980px) {
+            img {
+                width: 110px;
+                height: 100px;
+                border: black 2px solid;
+            }
+            .container {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                justify-items: stretch;
+            }
+            .btn {
+                margin-top: 10px;
+                padding: 10px 20px;
+                color: white;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <img class="img" id="ramp" src="ramp logo.jpeg" alt="">
-        <img class="img" id="ramp" src="ramp logo.jpeg" alt="">
-        <img class="img" id="platypus" src="platypus.jpg" alt="">
-        <img class="img" id="platypus" src="platypus.jpg" alt="">
-        <img class="img" id="mhp" src="mhp.jpg" alt="">
-        <img class="img" id="mhp" src="mhp.jpg" alt="">
-        <img class="img" id="carcass" src="carcass.jpg" alt="">
-        <img class="img" id="carcass" src="carcass.jpg" alt="">
-        <img class="img" id="homer" src="homer.png" alt="">
-        <img class="img" id="homer" src="homer.png" alt="">
-        <img class="img" id="satan" src="satan.jpg" alt="">
-        <img class="img" id="satan" src="satan.jpg" alt="">
-        <img class="img" id="gandhi" src="gandhi.jpg" alt="">
-        <img class="img" id="gandhi" src="gandhi.jpg" alt="">
-        <img class="img" id="dog" src="dog.jpg" alt="">
-        <img class="img" id="dog" src="dog.jpg" alt="">
-        <img class="img" id="sponge" src="sponge.jpg" alt="">
-        <img class="img" id="sponge" src="sponge.jpg" alt="">
-
-
-
-    </div>
+    <h1 id="title">Matching Game</h1>
+    <p id="desc">Try to match pictures as fast as you can.</p>
     <div class="game">
-        <button id='play' class="btn" onclick="playAgain() ">PLAY AGAIN</button disabled>
-        <button class="btn" onclick="reset()">RESET</button>
+        <button class="btn level" onclick="startGame(9)">Easy</button>
+        <button class="btn level" onclick="startGame(14)">Medium</button>
+        <button class="btn level" onclick="startGame(20)">Hard</button>
+        <button class="btn level" onclick="startGame(30)">Extreme</button>
+        <button style="display: none;" id='play' class="btn" onclick="playAgain() ">PLAY AGAIN</button disabled>
+        <button style="display:none;" id='reset' class="btn" onclick="reset()">RESET</button>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js"></script>
     <script>
+        var images = [];
+        var container;
         var count = 0;
         var pairCount = 0;
+        var timer;
         var ids = [];
         var pairs = [];
-        const images = document.querySelectorAll('.img');
-        const container = document.querySelector('.container');
-        var winCondition = images.length / 2;
-        shuffle();
+        var winCondition;
+        var output = '';
+        var i;
+
+        function scale(imgCount, images) {
+            if (imgCount == 14) {
+                document.getElementsByClassName('container')[0].style.gridTemplateColumns = "repeat(7, 1fr)";
+                images.forEach(image => {
+                    image.style.width = '200px';
+                    image.style.height = '150px';
+                })
+            }
+
+            if (imgCount == 20) {
+                document.getElementsByClassName('container')[0].style.gridTemplateColumns = "repeat(10, 1fr)";
+                images.forEach(image => {
+                    image.style.width = '125px';
+                    image.style.height = '150px';
+                })
+            }
+
+            if (imgCount == 30) {
+                document.getElementsByClassName('container')[0].style.gridTemplateColumns = "repeat(12, 1fr)";
+                images.forEach(image => {
+                    image.style.width = '110px';
+                    image.style.height = '125px';
+                })
+            }
+
+        }
+
+        async function get(url, num) {
+            let response = await fetch(url);
+            if (response.status == 404) {
+
+            }
+            return `<img class="img" id="${num}" src="${response.url}" alt="">`;
+
+        }
+
+        function ope(op) {
+            if (op != undefined) {
+                output += op;
+                output += op;
+            }
+            return output;
+        }
+        async function op(op) {
+            let x = await ope(op);
+            return x;
+        }
+
+        function startGame(imgCount) {
+            winCondition = imgCount;
+            container = document.createElement('div');
+            container.className = 'container';
+            let gameButtons = document.querySelector('.game');
+            document.body.insertBefore(container, gameButtons);
+            document.getElementById('play').style.display = 'inline';
+            document.getElementById('reset').style.display = 'inline';
+            document.getElementById('title').remove()
+            document.getElementById('desc').remove()
+            document.querySelectorAll('.level').forEach(element => element.remove());
+            for (i = 0; i < imgCount; i++) {
+                num = Math.floor(Math.random() * 1000)
+                get(`https://picsum.photos/id/${num}/200/300`, num, i).then(data =>
+                    op(data)
+                ).catch(() => console.log('ok')).then(res => {
+                    container.innerHTML = res;
+                    images = document.querySelectorAll('.img');
+                    scale(imgCount, images);
+                    shuffle();
+                })
+            }
+            addTimer();
+        }
+
 
         function shuffle() {
+
             var j, i, x;
             for (i = images.length - 1; i > 0; i--) {
                 j = Math.floor(Math.random() * (i + 1));
@@ -88,11 +195,21 @@
                 container.appendChild(images[j]);
             }
             images.forEach(function(image) {
+
                 image.addEventListener('click', turnImg);
             });
         }
 
+        function addTimer() {
+            let time = 0;
+            let timing = document.createElement('p');
+            document.body.appendChild(timing);
 
+            timer = setInterval(() => {
+                time += 1;
+                timing.innerHTML = `Time: ${time}`
+            }, 1000);
+        }
 
         function turnImg(e) {
             count += 1;
@@ -100,6 +217,13 @@
             let id = e.target.id;
             ids.push(id);
             e.target.style.filter = 'brightness(100%)';
+            gsap.fromTo(e.target, {
+                rotationY: 0
+            }, {
+                duration: 1,
+                rotationY: 180,
+                ease: "bounce",
+            });
             if (count == 2) {
                 images.forEach(function(image) {
                     image.style.pointerEvents = 'none';
@@ -143,16 +267,13 @@
         };
 
         function win() {
+            clearInterval(timer);
             document.getElementById("play").disabled = false;
+            document.getElementById("play").style.color = 'white';
             const images = document.querySelectorAll('img');
             images.forEach(function(image) {
                 image.style.filter = 'brightness(100%)';
             });
-            let p = document.createElement('p');
-            p.className = 'win'
-            p.textContent = 'YOU WIN';
-            document.body.appendChild(p);
-
         }
 
         function playAgain() {
@@ -177,6 +298,7 @@
             });
         }
     </script>
+
 </body>
 
 </html>
