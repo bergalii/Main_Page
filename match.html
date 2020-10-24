@@ -89,16 +89,17 @@
     <h1 id="title">Matching Game</h1>
     <p id="desc">Try to match pictures as fast as you can.</p>
     <div class="game">
-        <button class="btn level" onclick="startGame(9)">Easy</button>
-        <button class="btn level" onclick="startGame(14)">Medium</button>
-        <button class="btn level" onclick="startGame(20)">Hard</button>
-        <button class="btn level" onclick="startGame(30)">Extreme</button>
+        <button id="easy" class="btn level" onclick="startGame(9)">Easy</button>
+        <button id="medium" class="btn level" onclick="startGame(14)">Medium</button>
+        <button id="hard" class="btn level" onclick="startGame(20)">Hard</button>
+        <button id="extreme" class="btn level" onclick="startGame(30)">Extreme</button>
         <button style="display: none;" id='play' class="btn" onclick="playAgain() ">PLAY AGAIN</button disabled>
         <button style="display:none;" id='reset' class="btn" onclick="reset()">RESET</button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js"></script>
     <script>
+        var imgCount;
         var images = [];
         var container;
         var count = 0;
@@ -108,7 +109,7 @@
         var pairs = [];
         var winCondition;
         var output = '';
-        var i;
+        var diff;
 
         function scale(imgCount, images) {
             if (imgCount == 14) {
@@ -139,26 +140,29 @@
 
         async function get(url, num) {
             let response = await fetch(url);
-            if (response.status == 404) {
-
+            if (response.status != 404) {
+                return `<img class="img" id="${num}" src="${response.url}" alt="">`;
+            } else {
+                throw new Error('nopee');
             }
-            return `<img class="img" id="${num}" src="${response.url}" alt="">`;
+
 
         }
 
-        function ope(op) {
+        function outputCollector(op) {
             if (op != undefined) {
                 output += op;
                 output += op;
             }
             return output;
         }
-        async function op(op) {
-            let x = await ope(op);
-            return x;
+        async function outputAysnc(op) {
+            output = await outputCollector(op);
+            return output;
         }
 
         function startGame(imgCount) {
+            diff = localStorage.setItem("difficulty", "easy");
             winCondition = imgCount;
             container = document.createElement('div');
             container.className = 'container';
@@ -166,19 +170,21 @@
             document.body.insertBefore(container, gameButtons);
             document.getElementById('play').style.display = 'inline';
             document.getElementById('reset').style.display = 'inline';
-            document.getElementById('title').remove()
-            document.getElementById('desc').remove()
-            document.querySelectorAll('.level').forEach(element => element.remove());
-            for (i = 0; i < imgCount; i++) {
+            try {
+                document.getElementById('title').remove();
+                document.getElementById('desc').remove();
+                document.querySelectorAll('.level').forEach(element => element.remove());
+            } catch {};
+            for (let i = 0; i < imgCount; i++) {
                 num = Math.floor(Math.random() * 1000)
-                get(`https://picsum.photos/id/${num}/200/300`, num, i).then(data =>
-                    op(data)
-                ).catch(() => console.log('ok')).then(res => {
+                get(`https://picsum.photos/id/${num}/200/300`, num).then(data =>
+                    outputAysnc(data)
+                ).catch(() => console.log('amk')).then(res => {
                     container.innerHTML = res;
                     images = document.querySelectorAll('.img');
                     scale(imgCount, images);
                     shuffle();
-                })
+                });
             }
             addTimer();
         }
@@ -277,25 +283,40 @@
         }
 
         function playAgain() {
-            const images = document.querySelectorAll('img');
-            images.forEach(function(image) {
-                image.style.filter = 'brightness(0%)';
-                image.style.pointerEvents = '';
-                document.querySelector('.win').textContent = '';
-                count = 0;
-                shuffle();
-            });
+            location.reload();
+        }
+
+        window.onload = function() {
+            var reloading = sessionStorage.getItem("reloading");
+            if (reloading) {
+                sessionStorage.removeItem("reloading");
+            }
+            click(diff);
+        }
+
+        function reloadP() {
+            sessionStorage.setItem("reloading", "true");
+
+            document.location.reload();
         }
 
         function reset() {
-            const images = document.querySelectorAll('img');
-            images.forEach(function(image) {
-                image.style.filter = 'brightness(0%)';
-                image.style.pointerEvents = '';
-                pairs.length = 0;
-                pairCount = 0;
-                count = 0;
-            });
+            console.log(imgCount);
+
+            location.reload();
+
+
+        }
+
+        function click(diff) {
+            console.log(diff);
+            if (diff == 'easy') {
+                document.getElementById('easy').click();
+
+
+
+
+            }
         }
     </script>
 
