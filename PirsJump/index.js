@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let doodlerLeftSpace = 50
     let startPoint = 150
     let doodlerBottomSpace = startPoint
-    const gravity = 0.9
     let upTimerId
     let downTimerId
     let isJumping = true
@@ -65,8 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function createDoodler() {
         grid.appendChild(doodler);
         doodler.classList.add('doodler');
-        //doodlerLeftSpace = platforms[0].left
-        doodlerLeftSpace = 10;
+        doodlerLeftSpace = platforms[0].left
         doodler.style.left = doodlerLeftSpace + 'px'
         doodler.style.bottom = doodlerBottomSpace + 'px'
     }
@@ -79,8 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
             doodlerBottomSpace -= 5
             doodler.style.bottom = doodlerBottomSpace + 'px'
             if (doodlerBottomSpace <= 0) {
-                jump();
-                //gameOver();
+                gameOver();
             }
             platforms.forEach(platform => {
                 if (
@@ -156,7 +153,8 @@ document.addEventListener('DOMContentLoaded', () => {
         while (grid.firstChild) {
             grid.removeChild(grid.firstChild)
         }
-        grid.innerHTML = score
+        grid.innerHTML = `<p id="score">Score : ${score}</p>
+                          <p>You killed Pirs!</p>`
         clearInterval(upTimerId);
         clearInterval(downTimerId);
         clearInterval(leftTimerId);
@@ -177,8 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keyup', (e) => {
         if (e.key === 'Enter') {
             if (isGameOver) {
-                console.log(document.querySelector('.grid').childNodes[3]);
-                document.querySelector('.grid').childNodes[3].remove();
+                grid.innerHTML = '<p id="score">Score : 0</p>'
                 start();
             };
 
