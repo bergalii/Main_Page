@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let platforms = []
     let score = 0
     let doodlerLeftSpace = 50
+    let gravity = 9.8;
     let startPoint = 150
     let doodlerBottomSpace = startPoint
     let upTimerId
@@ -70,14 +71,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function fall() {
-        //console.log('fall')
+        console.log('fall')
         isJumping = false
         clearInterval(upTimerId);
         downTimerId = setInterval(function() {
-            doodlerBottomSpace -= 5
+            doodlerBottomSpace -= 5;
             doodler.style.bottom = doodlerBottomSpace + 'px'
             if (doodlerBottomSpace <= 0) {
-                gameOver();
+                jump();
+                //gameOver();
             }
             platforms.forEach(platform => {
                 if (
@@ -90,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     startPoint = doodlerBottomSpace;
                     jump();
                     isJumping = true;
-                }
+                };
             })
         }, 20)
     }
@@ -120,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 doodlerLeftSpace -= 5;
                 doodler.style.left = doodlerLeftSpace + 'px';
             };
-        }, 20)
+        }, 40)
     }
 
     function moveRight() {
@@ -134,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 doodlerLeftSpace += 5;
                 doodler.style.left = doodlerLeftSpace + 'px';
             };
-        }, 20)
+        }, 40)
     }
 
 

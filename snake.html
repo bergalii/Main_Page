@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .snake {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            left: 300px;
+            top: 300px;
+            background-color: green;
+        }
+        
+        .body {
+            position: relative;
+            background-color: black;
+            width: 30px;
+            height: 30px;
+        }
+        
+        .apple {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-color: red;
+            top: 400px;
+            left: 500px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="snake"></div>
+    <div class="body"></div>
+    <div class="apple"></div>
+    <script>
+        var moveRight, moveLeft, moveDown, moveUp;
+        var left = false;
+        var right = false;
+        var up = false;
+        var down = false;
+        var snake = document.querySelector('.snake');
+        var apple = document.querySelector('.apple');
+        var body = document.querySelector('.body');
+        var bodyProperties = window.getComputedStyle(body);
+        var snakeProperties = window.getComputedStyle(snake);
+        var appleProperties = window.getComputedStyle(apple);
+
+
+        document.addEventListener("keydown", (e) => {
+            console.log(e.key);
+            if (e.key == "ArrowLeft") {
+                clearInterval(moveRight);
+                clearInterval(moveDown);
+                clearInterval(moveUp);
+                if (left == false) {
+                    left = true;
+                    right = false;
+                    up = false;
+                    down = false;
+                    moveLeft = setInterval(() => {
+                        let left = snakeProperties.getPropertyValue('left')
+                        left = String(left).replace('px', '');
+                        if (left >= 5)
+                            left = parseInt(left) - 10;
+                        snake.style.left = `${left}px`
+                        checkCollision();
+                    }, 30);
+                }
+            } else if (e.key == "ArrowRight") {
+                clearInterval(moveDown);
+                clearInterval(moveUp);
+                clearInterval(moveLeft);
+                if (right == false) {
+                    right = true;
+                    left = false;
+                    up = false;
+                    down = false;
+                    moveRight = setInterval(() => {
+                        let left = snakeProperties.getPropertyValue('left')
+                        left = String(left).replace('px', '');
+                        left = parseInt(left) + 10;
+                        snake.style.left = `${left}px`
+                        checkCollision();
+                    }, 30);
+                }
+            } else if (e.key == "ArrowDown") {
+                clearInterval(moveRight);
+                clearInterval(moveUp);
+                clearInterval(moveLeft);
+                if (down == false) {
+                    right = false;
+                    left = false;
+                    up = false;
+                    down = true;
+                    moveDown = setInterval(() => {
+                        let top = snakeProperties.getPropertyValue('top')
+                        top = String(top).replace('px', '');
+                        if (top >= 0)
+                            top = parseInt(top) + 10;
+                        snake.style.top = `${top}px`
+                        checkCollision();
+                    }, 30);
+                }
+
+            } else if (e.key == "ArrowUp") {
+                clearInterval(moveRight);
+                clearInterval(moveDown);
+                clearInterval(moveLeft);
+                if (up == false) {
+                    right = false;
+                    left = false;
+                    up = true;
+                    down = false;
+                    moveUp = setInterval(() => {
+                        let top = snakeProperties.getPropertyValue('top');
+                        top = String(top).replace('px', '');
+                        if (top >= 5)
+                            top = parseInt(top) - 10;
+                        snake.style.top = `${top}px`
+                        checkCollision();
+                    }, 30);
+                }
+
+            }
+        });
+
+        function checkCollision() {
+            let snakeTop = snakeProperties.getPropertyValue('top');
+            let snakeLeft = snakeProperties.getPropertyValue('left');
+            let snakeBottom = snakeProperties.getPropertyValue('bottom');
+            let snakeRight = snakeProperties.getPropertyValue('right');
+            let appleTop = appleProperties.getPropertyValue('top');
+            let appleLeft = appleProperties.getPropertyValue('left');
+            let appleBottom = appleProperties.getPropertyValue('bottom');
+            let appleRight = appleProperties.getPropertyValue('right');
+
+            if (snakeTop >= appleTop && snakeBottom >= appleBottom && snakeLeft >= appleLeft && snakeRight >= appleRight) {
+                let padding = String(bodyProperties.paddingLeft).replace('px', '');
+                padding = parseInt(padding) + 10;
+                body.style.padding = `0px 0px 0px ${padding}px`;
+                //apple.remove();
+            }
+
+        }
+    </script>
+</body>
+
+</html>
