@@ -43,7 +43,8 @@ function checkDeath() {
 }
 
 function gameEnd() {
-    console.log('you lose');
+    if (confirm('You lose!Confirm to restart.'))
+        location.reload();
 }
 
 

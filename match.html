@@ -9,7 +9,7 @@
         body {
             text-align: center;
             font-size: 1.5rem;
-            background-image: url(https://pixabay.com/get/57e8d0414356a914f6d1867dda353678153cdee65b54704f_1920.jpg);
+            background-image: linear-gradient(to top, #fff1eb 0%, #ace0f9 100%);
         }
         
         .container {
@@ -183,6 +183,7 @@
                     container.innerHTML = res;
                     images = document.querySelectorAll('.img');
                     scale(imgCount, images);
+                    console.log(images);
                     shuffle();
                 });
             }
