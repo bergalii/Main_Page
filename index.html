@@ -28,20 +28,6 @@
             overflow: hidden;
         }
         
-        div::before {
-            content: "";
-            position: absolute;
-            top: 20;
-            left: 37.5%;
-            width: 25%;
-            margin: auto;
-            height: 72%;
-            opacity: .8;
-            z-index: -1;
-            background: white;
-            border-radius: 5px;
-        }
-        
         a:hover {
             text-decoration: none;
             color: white;
@@ -54,12 +40,21 @@
         .yellow:hover {
             opacity: 0.9;
         }
+        
+        .lime {
+            background-color: lime;
+        }
+        
+        .lime:hover {
+            opacity: 0.9;
+        }
     </style>
 </head>
 
 <body>
     <header>
-        <div class="mt-5  w-25 ml-auto mr-auto p-4 text-center">
+
+        <div class="container rounded bg-light mt-5  w-25 ml-auto mr-auto pb-2 text-center">
             <h1 class="hello">Hello</h1>
             <button onmouseover="anim(this)" onmouseout="reverse(this)" class="d-block btn-primary rounded mt-2 p-3"><a href="match.html">Play Matching Game</a></button>
             <button onmouseover="anim(this)" onmouseout="reverse(this)" class="d-block btn-dark rounded mt-2 p-3"><a href="vampire.html">Play Vampire vs. Villagers</a></button>
@@ -68,6 +63,7 @@
             <button onmouseover="anim(this)" onmouseout="reverse(this)" class="d-block btn-danger rounded mt-2 p-3"><a href="TeamMaker/teamup.html">Team Creator</a></button>
             <button onmouseover="anim(this)" onmouseout="reverse(this)" class="d-block btn-secondary rounded mt-2 p-3"><a href="PirsJump/pirs.html">Pirs Jump</a></button>
             <button onmouseover="anim(this)" onmouseout="reverse(this)" class="d-block yellow rounded mt-2 p-3"><a href="Snake/snake.html">SnakeButFish</a></button>
+            <button onmouseover="anim(this)" onmouseout="reverse(this)" class="d-block lime rounded mt-2 p-3"><a href="/task.html">Task</a></button>
         </div>
     </header>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js"></script>
