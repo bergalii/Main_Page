@@ -191,46 +191,52 @@
             });
         }
 
-        function addTaskbyBtn(e) {
+        function addTaskbyBtn() {
             if (taskInput.value == '') {
                 alert('Add a task');
+            } else {
+                const li = document.createElement('li');
+                li.className = 'list-group-item mt-1 p-1 d-flex justify-content-between';
+                li.appendChild(document.createTextNode(taskInput.value));
+                const link = document.createElement('button');
+                link.className = 'delete-item secondary-content btn btn-danger';
+                link.innerHTML = '<i class="fa fa-remove"></i>';
+                li.appendChild(link);
+                taskList.appendChild(li);
+                storeTaskInLocalStorage(taskInput.value);
+                taskInput.value = '';
             }
 
-            const li = document.createElement('li');
-            li.className = 'list-group-item mt-1 p-1 d-flex justify-content-between';
-            li.appendChild(document.createTextNode(taskInput.value));
-            const link = document.createElement('button');
-            link.className = 'delete-item secondary-content btn btn-danger';
-            link.innerHTML = '<i class="fa fa-remove"></i>';
-            li.appendChild(link);
-            taskList.appendChild(li);
-            storeTaskInLocalStorage(taskInput.value);
-            taskInput.value = '';
-            e.preventDefault();
+
+
         }
 
         function addTask(e) {
+            console.log('ok')
             if (taskInput.value == '') {
                 alert('Add a task');
+            } else {
+                const li = document.createElement('li');
+                li.className = 'list-group-item mt-1 p-1 d-flex justify-content-between';
+                li.appendChild(document.createTextNode(taskInput.value));
+                const link = document.createElement('button');
+                link.className = 'delete-item secondary-content btn btn-danger';
+                link.innerHTML = '<i class="fa fa-remove"></i>';
+                li.appendChild(link);
+                taskList.appendChild(li);
+                storeTaskInLocalStorage(taskInput.value);
+                taskInput.value = '';
             }
-
-            const li = document.createElement('li');
-            li.className = 'list-group-item mt-1 p-1 d-flex justify-content-between';
-            li.appendChild(document.createTextNode(taskInput.value));
-            const link = document.createElement('button');
-            link.className = 'delete-item secondary-content btn btn-danger';
-            link.innerHTML = '<i class="fa fa-remove"></i>';
-            li.appendChild(link);
-            taskList.appendChild(li);
-            storeTaskInLocalStorage(taskInput.value);
-            taskInput.value = '';
             e.preventDefault();
         }
 
         function removeTask(e) {
-            if (e.target.parentElement.classList.contains('delete-item') || e.target.classList.contains('delete-item')) {
+            if (e.target.parentElement.classList.contains('delete-item')) {
                 e.target.parentElement.parentElement.remove();
                 removeTaskFromLocalStorage(e.target.parentElement.parentElement);
+            } else if (e.target.classList.contains('delete-item')) {
+                e.target.parentElement.remove();
+                removeTaskFromLocalStorage(e.target.parentElement);
             }
         }
 
@@ -241,10 +247,7 @@
 
         }
 
-        function clearTasksFromLocalStorage() {
-            console.log(localStorage)
-            localStorage.tasks.clear();
-        }
+
 
         function filterTasks(e) {
             const txt = e.target.value.toLowerCase();
@@ -267,6 +270,7 @@
 
             }
             tasks.push(task);
+            console.log(tasks)
             localStorage.setItem('tasks', JSON.stringify(tasks));
         }
 
@@ -300,7 +304,6 @@
             }
             tasks.forEach(function(task, index) {
                 if (taskItem.textContent == task) {
-
                     tasks.splice(index, 1);
                 }
             });
