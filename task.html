@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Day Planner</title>
+    <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@1,300;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -42,7 +43,7 @@
         .searchbox {
             height: 38px;
             pointer-events: none;
-            background-color: rgb(74, 74, 248);
+            background-color: whitesmoke;
         }
         
         .edit:hover {
@@ -50,7 +51,17 @@
         }
         
         .list-group-item {
-            color: black;
+            color: #343a40;
+            background-color: whitesmoke;
+        }
+        
+        .list-group-item:nth-child(odd) {
+            color: whitesmoke;
+            background-color: #343a40;
+        }
+        
+        h1 {
+            color: #343a40;
         }
     </style>
 </head>
@@ -70,14 +81,14 @@
                             <div class="input-field">
                                 <input type="text" name="task" id="task" class="form-control" placeholder="Task Name">
                             </div>
-                            <input type="submit" value="Add Task" class="btn btn-primary mt-2 mr-auto">
                         </form>
+                        <button id="taskBtn" class="btn btn-primary mt-2 mr-auto">Add Task</button>
                     </div>
                 </div>
                 <div class="card second mt-3 pb-2">
                     <div class="card-body">
-                        <div class=" d-flex justify-content-between bg-dark">
-                            <h5 class="card-header mb-2 w-100" id="task-title">Task List</h5>
+                        <div class=" rounded d-flex justify-content-between bg-primary">
+                            <h5 class="card-header  w-100" id="task-title">Task List</h5>
                             <div class="input-field w-50 p-0 d-flex flex-row m-auto pr-1">
                                 <input type="text" name="filter" id="filter" class="form-control" placeholder="Search For Tasks">
                                 <button class="rounded searchbox btn btn-primary h-30"><i class="d-inline fa fa-search"></i></button>
@@ -96,14 +107,25 @@
         const bodyHTML = document.body.innerHTML;
         var name = JSON.parse(localStorage.getItem('name'));
         const form = document.querySelector('#task-form');
+        const taskBtn = document.querySelector('#taskBtn');
         const editBtn = document.querySelector('.edit');
         const taskList = document.querySelector('.list-group');
         const clearBtn = document.querySelector('.clear-tasks');
         const filter = document.querySelector('#filter');
         const taskInput = document.querySelector('#task');
-        start(name);
+        start();
 
-        function start(name) {
+        function loadEventListeners() {
+            document.addEventListener('DOMContentLoaded', getTasks);
+            form.addEventListener('submit', addTask);
+            taskList.addEventListener('click', removeTask);
+            taskBtn.addEventListener('click', addTaskbyBtn)
+            clearBtn.addEventListener('click', clearTasks);
+            filter.addEventListener('keyup', filterTasks);
+            editBtn.addEventListener('click', editName);
+        }
+
+        function start() {
 
             let boxwidth = window.getComputedStyle(document.getElementById('filter')).height
             document.querySelector('.searchbox').style.height = boxwidth;
@@ -113,18 +135,38 @@
             } else {
                 loadEventListeners();
                 let nameTag = document.createElement('h1');
+                nameTag.classList = 'nametag';
                 nameTag.textContent = `Welcome ${name}`
                 document.querySelector('.nameholder').insertBefore(nameTag, document.querySelector('.edit'));
             }
         }
 
-        function loadEventListeners() {
-            document.addEventListener('DOMContentLoaded', getTasks)
-            form.addEventListener('submit', addTask);
-            taskList.addEventListener('click', removeTask);
-            clearBtn.addEventListener('click', clearTasks);
-            filter.addEventListener('keyup', filterTasks);
-            editBtn.addEventListener('click', changeName);
+        function editName() {
+            document.querySelector('.nametag').remove();
+            let nameTag = document.createElement('div');
+            nameTag.classList.add("edit-state");
+            nameTag.innerHTML = `       <form action="" id="edit-state" class="d-flex">
+                                            <input type="text" class="name form-control  mb-0 " placeholder="Please Enter Your Name">
+                                            <button class="rounded btn btn-primary mb-2 edit-confirm">OK</button>
+                                        </form>`
+
+            document.querySelector('.nameholder').insertBefore(nameTag, document.querySelector('.edit'));
+            document.querySelector('.edit-confirm').addEventListener('click', () => {
+                name = document.querySelector('.name').value;
+                localStorage.setItem('name', JSON.stringify(name));
+                document.querySelector('.edit-state').remove();
+                start();
+
+            });
+
+            document.querySelector('.edit-confirm').addEventListener('submit', () => {
+                name = document.querySelector('.name').value;
+                localStorage.setItem('name', JSON.stringify(name));
+                document.querySelector('.edit-state').remove();
+                start();
+
+            });
+
         }
 
         function changeName() {
@@ -141,11 +183,30 @@
                 name = document.querySelector('.name').value;
                 localStorage.setItem('name', JSON.stringify(name));
                 let nameTag = document.createElement('h1');
+                nameTag.classList = 'nametag';
                 nameTag.textContent = `Welcome ${name}`
                 document.body.innerHTML = bodyHTML;
                 document.querySelector('.nameholder').insertBefore(nameTag, document.querySelector('.edit'));
                 loadEventListeners();
             });
+        }
+
+        function addTaskbyBtn(e) {
+            if (taskInput.value == '') {
+                alert('Add a task');
+            }
+
+            const li = document.createElement('li');
+            li.className = 'list-group-item mt-1 p-1 d-flex justify-content-between';
+            li.appendChild(document.createTextNode(taskInput.value));
+            const link = document.createElement('button');
+            link.className = 'delete-item secondary-content btn btn-danger';
+            link.innerHTML = '<i class="fa fa-remove"></i>';
+            li.appendChild(link);
+            taskList.appendChild(li);
+            storeTaskInLocalStorage(taskInput.value);
+            taskInput.value = '';
+            e.preventDefault();
         }
 
         function addTask(e) {
@@ -167,21 +228,22 @@
         }
 
         function removeTask(e) {
-            if (e.target.parentElement.classList.contains('delete-item')) {
-                if (confirm('Are you sure?')) {
-                    e.target.parentElement.parentElement.remove();
-                    removeTaskFromLocalStorage(e.target.parentElement.parentElement);
-                }
+            if (e.target.parentElement.classList.contains('delete-item') || e.target.classList.contains('delete-item')) {
+                e.target.parentElement.parentElement.remove();
+                removeTaskFromLocalStorage(e.target.parentElement.parentElement);
             }
         }
 
         function clearTasks() {
             taskList.innerHTML = '';
-            clearTasksFromLocalStorage();
+            tasks = [];
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+
         }
 
         function clearTasksFromLocalStorage() {
-            localStorage.clear();
+            console.log(localStorage)
+            localStorage.tasks.clear();
         }
 
         function filterTasks(e) {
