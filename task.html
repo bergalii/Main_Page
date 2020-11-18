@@ -21,6 +21,11 @@
             color: whitesmoke;
         }
         
+        span {
+            font-size: 30px;
+            margin-left: 250px;
+        }
+        
         body {
             font-family: 'Roboto', sans-serif;
             color: whitesmoke;
@@ -62,6 +67,10 @@
         
         h1 {
             color: #343a40;
+        }
+        
+        .line-through {
+            text-decoration: line-through;
         }
     </style>
 </head>
@@ -113,6 +122,13 @@
         const clearBtn = document.querySelector('.clear-tasks');
         const filter = document.querySelector('#filter');
         const taskInput = document.querySelector('#task');
+
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+
+        today = mm + '/' + dd + '/' + yyyy;
         start();
 
         function loadEventListeners() {
@@ -135,8 +151,11 @@
             } else {
                 loadEventListeners();
                 let nameTag = document.createElement('h1');
+                let date = document.createElement('span');
+                date.textContent = today;
                 nameTag.classList = 'nametag';
-                nameTag.textContent = `Welcome ${name}`
+                nameTag.textContent = `Welcome ${name}`;
+                nameTag.appendChild(date);
                 document.querySelector('.nameholder').insertBefore(nameTag, document.querySelector('.edit'));
             }
         }
@@ -183,8 +202,11 @@
                 name = document.querySelector('.name').value;
                 localStorage.setItem('name', JSON.stringify(name));
                 let nameTag = document.createElement('h1');
+                let date = document.createElement('span');
+                date.textContent = today;
                 nameTag.classList = 'nametag';
-                nameTag.textContent = `Welcome ${name}`
+                nameTag.innerHTML = `Welcome ${name}`
+                nameTag.appendChild(date);
                 document.body.innerHTML = bodyHTML;
                 document.querySelector('.nameholder').insertBefore(nameTag, document.querySelector('.edit'));
                 loadEventListeners();
@@ -237,7 +259,10 @@
             } else if (e.target.classList.contains('delete-item')) {
                 e.target.parentElement.remove();
                 removeTaskFromLocalStorage(e.target.parentElement);
+            } else {
+                e.target.classList.toggle("line-through");
             }
+
         }
 
         function clearTasks() {
@@ -253,10 +278,11 @@
             const txt = e.target.value.toLowerCase();
             document.querySelectorAll('.list-group-item').forEach(function(task) {
                 const item = task.firstChild.textContent;
+                console.log(item.toLowerCase().indexOf(txt))
                 if (item.toLowerCase().indexOf(txt) != -1) {
                     task.style.display = 'block';
                 } else {
-                    task.style.display = 'none';
+                    task.setAttribute('style', 'display:none !important');
                 }
             });
         }
