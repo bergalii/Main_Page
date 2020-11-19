@@ -234,7 +234,6 @@
         }
 
         function addTask(e) {
-            console.log('ok')
             if (taskInput.value == '') {
                 alert('Add a task');
             } else {
@@ -261,14 +260,26 @@
                 removeTaskFromLocalStorage(e.target.parentElement);
             } else {
                 e.target.classList.toggle("line-through");
-            }
+                let g = document.querySelector('.list-group');
+                let classes = [];
+                g.childNodes.forEach(el => {
+                    if (el.classList.contains('line-through')) {
+                        classes.push('1');
+                    } else {
+                        classes.push('0');
+                    }
+                });
+                localStorage.setItem('classes', JSON.stringify(classes));
+            };
 
         }
 
         function clearTasks() {
             taskList.innerHTML = '';
             tasks = [];
+            classes = [];
             localStorage.setItem('tasks', JSON.stringify(tasks));
+            localStorage.setItem('classes', JSON.stringify(classes));
 
         }
 
@@ -289,26 +300,32 @@
 
         function storeTaskInLocalStorage(task) {
             let tasks;
-            if (localStorage.getItem('tasks') == null) {
+            let classes;
+            if (localStorage.getItem('tasks') == null || localStorage.getItem('classes') == null) {
                 tasks = [];
+                classes = [];
             } else {
                 tasks = JSON.parse(localStorage.getItem('tasks'));
-
+                classes = JSON.parse(localStorage.getItem('classes'));
             }
             tasks.push(task);
-            console.log(tasks)
+            classes.push('0');
             localStorage.setItem('tasks', JSON.stringify(tasks));
+            localStorage.setItem('classes', JSON.stringify(classes));
         }
 
         function getTasks() {
             let tasks;
             if (localStorage.getItem('tasks') == null) {
                 tasks = [];
+                classes = [];
             } else {
                 tasks = JSON.parse(localStorage.getItem('tasks'));
+                classes = JSON.parse(localStorage.getItem('classes'));
+                console.log(classes)
 
             }
-
+            let i = 0;
             tasks.forEach(function(task) {
                 const li = document.createElement('li');
                 li.className = 'list-group-item mt-1 p-1 d-flex justify-content-between';
@@ -318,22 +335,34 @@
                 link.innerHTML = '<i class="fa fa-remove"></i>';
                 li.appendChild(link);
                 taskList.appendChild(li);
+                console.log(classes[i])
+                if (classes[i] == '1') {
+                    li.classList.toggle('line-through');
+
+                }
+                i += 1;
+
             });
         }
 
         function removeTaskFromLocalStorage(taskItem) {
             let tasks;
-            if (localStorage.getItem('tasks') == null) {
+            let classes;
+            if (localStorage.getItem('tasks') == null || localStorage.getItem('classes') == null) {
                 tasks = [];
+                classes = [];
             } else {
                 tasks = JSON.parse(localStorage.getItem('tasks'));
+                classes = JSON.parse(localStorage.getItem('classes'));
             }
             tasks.forEach(function(task, index) {
                 if (taskItem.textContent == task) {
                     tasks.splice(index, 1);
+                    classes.splice(index, 1);
                 }
             });
             localStorage.setItem('tasks', JSON.stringify(tasks));
+            localStorage.setItem('classes', JSON.stringify(classes));
         }
     </script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
