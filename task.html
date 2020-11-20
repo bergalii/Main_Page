@@ -72,12 +72,31 @@
         .line-through {
             text-decoration: line-through;
         }
+        
+        @media (max-width: 1200px) {
+            .container {
+                width: 100% !important;
+            }
+            span {
+                font-size: 16px;
+                margin-left: 30px;
+            }
+            .search {
+                width: 100% !important;
+                padding-left: 40px;
+            }
+            h1 {
+                font-size: 28px !important;
+            }
+            .fa-edit {
+                font-size: 20px;
+            }
+        }
     </style>
 </head>
 
 <body>
     <div class="container w-50 ml-auto mr-auto p-4 ">
-
         <div class="row rounded pb-3">
             <div class="col mt-3">
                 <div class="nameholder d-flex justify-content-between">
@@ -98,7 +117,7 @@
                     <div class="card-body">
                         <div class=" rounded d-flex justify-content-between bg-primary">
                             <h5 class="card-header  w-100" id="task-title">Task List</h5>
-                            <div class="input-field w-50 p-0 d-flex flex-row m-auto pr-1">
+                            <div class="input-field search w-50 p-0 d-flex flex-row m-auto pr-1">
                                 <input type="text" name="filter" id="filter" class="form-control" placeholder="Search For Tasks">
                                 <button class="rounded searchbox btn btn-primary h-30"><i class="d-inline fa fa-search"></i></button>
                             </div>
