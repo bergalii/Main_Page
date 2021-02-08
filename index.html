@@ -56,19 +56,23 @@
         }
         
         .buttons {
+            margin-top: -20px;
             display: grid;
             grid-template-columns: repeat(2, 1fr);
         }
         
         a {
             color: white;
+            cursor: pointer;
         }
         
         button {
+            color: white;
             margin: auto;
             width: 300px;
             font-size: 1rem;
             font-weight: bolder;
+            cursor: pointer;
             box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2), 0 0 20px rgba(0, 0, 0, 0.2);
         }
         
@@ -94,11 +98,19 @@
         .lime {
             background-color: lime;
         }
+
+        .team{
+            background-color: #fda085;
+        }
+
+        .quiz{
+            background-color: aquamarine;
+        }
         
         @media only screen and (max-width: 600px) {
             .card {
-                width: 90%;
-                height: 500px;
+                width: 100%;
+                height: 600px;
                 transform-style: preserve-3d;
                 border-radius: 50px;
                 box-shadow: 0 20px 20px rgba(0, 0, 0, 0.2), 0 0 50px rgba(0, 0, 0, 0.2);
@@ -128,15 +140,16 @@
                     </div>
                 </div>
                 <div class="buttons">
-                    <button class="d-block btn-primary rounded mt-2 p-3"><a href="match.html">Play Matching Game</a></button>
-                    <button class="d-block btn-dark rounded mt-2 p-3"><a href="vampire.html">Play Vampire vs. Villagers</a></button>
+                    <button class="d-block btn-primary rounded mt-2 p-3"><a href="match.html">Matching Game</a></button>
+                    <button class="d-block btn-dark rounded mt-2 p-3"><a href="vampire.html">Vampire vs. Villagers</a></button>
                     <button class="d-block btn-success rounded mt-2 p-3 "><a href="tutorial.html">Play Trivia Quiz</a></button>
                     <button class="d-block btn-warning rounded mt-2 p-3 "><a href="scary.html">Play New Game</a></button>
                     <button class="d-block btn-danger rounded mt-2 p-3"><a href="TeamMaker/teamup.html">Team Creator</a></button>
                     <button class="d-block btn-secondary rounded mt-2 p-3"><a href="PirsJump/pirs.html">Pirs Jump</a></button>
                     <button class="d-block yellow rounded mt-2 p-3"><a href="Snake/snake.html">SnakeButFish</a></button>
                     <button class="d-block lime rounded mt-2 p-3"><a href="/MusicMaker/music.html">Music Maker</a></button>
-                    <button class="d-block lime rounded mt-2 p-3"><a href="/Quiz/quiz_react.html">Trivia Quiz /w React-Router</a></button>
+                    <button onclick='window.open("https://goofy-jepsen-6ff323.netlify.app/");return false;' class="d-block lime rounded mt-2 p-3 quiz">Trivia Quiz /w React</button>
+                    <button onclick='window.open("https://hungry-bassi-50f1ff.netlify.app/");return false;' class="d-block lime rounded mt-2 p-3 team">NBA Team Builder /w React</button>
                 </div>
 
             </div>
